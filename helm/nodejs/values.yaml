@@ -1,0 +1,52 @@
+# Default values for searchapi service.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+namespace: prod
+
+deployment:
+  name: nodejs
+  replicaCount: 2
+  minReadySeconds: 10
+  image:
+    repo: 353716661275.dkr.ecr.ap-south-1.amazonaws.com/nodejs-backend
+    tag: "2022-05-13-16-27"
+    pullPolicy: Always
+  port: 80
+  healthPath: /api/get-image
+  initialDelay: 0
+  liveness:
+    period: 10
+    timeout: 9
+    successThreshold: 1
+    failureThreshold: 2
+  readiness:
+    period: 10
+    timeout: 9
+    successThreshold: 3
+    failureThreshold: 2
+  shutdownTime: 30
+  nodeKey: prod/prod-cluster
+  nodeValue: prod-backend
+
+service:
+  portName: nodejs-port
+  name: nodejs-service
+  port: 443
+  targetport: 80
+  type: LoadBalancer
+  protocol: TCP
+  annotation:
+    successcode: '200-399'
+    healthcheckintervalseconds: 20
+
+disruptionBudget:
+  name: searchapi-disruptionbudget
+  minAvailable: 2
+
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 4
+  targetCPUUtilizationPercentage: 60
+  targetMemoryUtilizationPercentage: 60

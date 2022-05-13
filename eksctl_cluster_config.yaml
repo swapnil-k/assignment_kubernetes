@@ -1,0 +1,37 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: prod-cluster
+  region: ap-south-1
+  version: "1.21"
+
+#privateCluster:
+#  enabled: true
+#  additionalEndpointServices:
+  # For Cluster Autoscaler
+#  - "autoscaling"
+  # CloudWatch logging
+#  - "logs"
+
+vpc:
+  subnets:
+    private:
+      ap-south-1a: { id: subnet-02251dd4e0b2185d1 }
+      ap-south-1b: { id: subnet-062741a770d2a5388 }
+      ap-south-1c: { id: subnet-032f3330519651c42 }
+    public:
+      ap-south-1a: { id: subnet-01f10542cafc76e6a }
+      ap-south-1b: { id: subnet-03959688f6cd2fdb4 }
+      ap-south-1c: { id: subnet-07567bbd670117696 }
+
+#nodeGroups:
+managedNodeGroups:
+  - name: prod-workers
+    instanceType: t3a.medium
+    minSize: 2
+    maxSize: 4
+    desiredCapacity: 2
+    volumeSize: 10
+    tags:
+      Name: prod-workernode
